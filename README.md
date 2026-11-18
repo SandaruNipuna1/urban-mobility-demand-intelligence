@@ -1,40 +1,46 @@
-# Urban Mobility Demand Intelligence
+# 🚲 Urban Mobility Demand Intelligence
 
-An end-to-end Data Science project focused on analysing urban bike-sharing patterns and predicting hourly rental demand using machine learning.
+An end-to-end Data Science project analyzing urban bike-sharing demand and developing machine learning models to predict hourly rental demand.
 
-## Project Overview
+## 📌 Project Overview
 
-Bike-sharing services need to understand how rental demand changes throughout the day and across different weather and seasonal conditions.
+Bike-sharing services need to understand how rental demand changes throughout the day, across seasons, and under different weather conditions.
 
-This project investigates historical bike-sharing data to identify demand patterns, develop predictive models and generate insights that can support operational planning.
+This project uses historical bike-sharing data to uncover demand patterns, investigate factors influencing rentals, conduct statistical analysis, and develop machine learning models for demand prediction. The findings can support better resource allocation, operational planning, and data-driven decision-making.
 
-## Objectives
+## 🎯 Objectives
 
-- Perform data quality assessment and exploratory data analysis.
-- Investigate relationships between weather, time and rental demand.
+- Perform data quality assessment and exploratory data analysis (EDA).
+- Identify temporal, seasonal, and weather-related rental demand patterns.
+- Investigate relationships between environmental factors and rental demand.
 - Conduct statistical analysis and hypothesis testing.
-- Engineer meaningful predictive features.
 - Develop and compare machine learning regression models.
-- Evaluate model performance using appropriate metrics.
-- Build an interactive application to demonstrate predictions.
+- Evaluate models using appropriate regression metrics.
+- Build an interactive application for demand prediction and visualization.
 
-## Dataset
+## 📊 Dataset
 
 **Source:** [UCI Bike Sharing Dataset](https://archive.ics.uci.edu/dataset/275/bike+sharing+dataset)
 
-The dataset contains hourly and daily bike rental information from 2011–2012, alongside weather and calendar-related variables.
+The dataset contains bike-sharing rental records from 2011–2012, including hourly and daily rental information, weather conditions, seasonal indicators, and calendar-related variables.
 
-## Technology Stack
+**Dataset files:**
+- `hour.csv` — Hourly bike rental records.
+- `day.csv` — Daily bike rental records.
 
-- Python
-- Pandas and NumPy
-- Matplotlib and Seaborn
-- SciPy and Statsmodels
-- Scikit-learn
-- Jupyter Notebook
-- Streamlit
+## 🛠️ Technology Stack
 
-## Project Structure
+| Category | Technologies |
+|---|---|
+| Programming | Python |
+| Data Manipulation | Pandas, NumPy |
+| Visualization | Matplotlib, Seaborn |
+| Statistical Analysis | SciPy, Statsmodels |
+| Machine Learning | Scikit-learn |
+| Development | Jupyter Notebook, Git, GitHub |
+| Deployment (planned) | Streamlit |
+
+## 📁 Project Structure
 
 ```text
 urban-mobility-demand-intelligence/
@@ -42,6 +48,10 @@ urban-mobility-demand-intelligence/
 │   ├── raw/
 │   └── processed/
 ├── notebooks/
+│   ├── 01_data_audit.ipynb
+│   ├── 02_exploratory_analysis.ipynb
+│   ├── 03_statistical_analysis.ipynb
+│   └── 04_model_development.ipynb
 ├── src/
 ├── app/
 ├── reports/
@@ -49,12 +59,48 @@ urban-mobility-demand-intelligence/
 └── README.md
 ```
 
-## Project Status
+## 🔬 Project Workflow
 
-Currently in development.
+1. **Data Audit** — Inspect data structure, missing values, duplicates, data types, and quality.
+2. **Exploratory Data Analysis** — Explore rental patterns, trends, distributions, and relationships.
+3. **Statistical Analysis** — Conduct statistical tests and investigate significant relationships.
+4. **Model Development** — Train, compare, and evaluate machine learning regression models.
+5. **Interactive Application** *(planned)* — Develop a dashboard for demand insights and interactive predictions.
 
-## Author
+## 📈 Models
 
-Sandaru Nipuna Nethsara Nanayakkara
+Machine learning regression models are developed and compared to predict hourly bike rental demand.
 
-[GitHub](https://github.com/SandaruNipuna1)
+Models explored include:
+
+- Dummy Regression (Baseline)
+- Linear Regression
+- Decision Tree Regression
+- Random Forest Regression
+- Hyperparameter tuning and model optimization
+
+## 📏 Evaluation Metrics
+
+Models are evaluated using:
+
+- Mean Absolute Error (MAE)
+- Root Mean Squared Error (RMSE)
+- R² Score
+
+## 🚧 Project Status
+
+**Currently in development.**
+
+- [x] Data Audit
+- [x] Exploratory Data Analysis
+- [x] Statistical Analysis
+- [x] Model Development & Evaluation
+- [ ] Final model refinement
+- [ ] Interactive Streamlit dashboard
+- [ ] Deployment
+
+## 👨‍💻 Author
+
+**Sandaru Nipuna Nethsara Nanayakkara**
+
+GitHub: [SandaruNipuna1](https://github.com/SandaruNipuna1)
