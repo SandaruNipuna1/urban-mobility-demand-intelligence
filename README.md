@@ -156,30 +156,35 @@ Additional evaluation included:
 
 ### 6. Interactive Dashboard
 
-<img width="1512" height="739" alt="Screenshot 2026-11-20 at 8 30 04 PM" src="https://github.com/user-attachments/assets/cb673ca6-3e9c-4d1d-9916-77297ece1bf5" />
-
-
 Developed an interactive Streamlit application with four main sections.
 
 **Overview**
+<img width="1512" height="739" alt="Screenshot 2026-11-20 at 8 30 04 PM" src="https://github.com/user-attachments/assets/cb673ca6-3e9c-4d1d-9916-77297ece1bf5" />
+
 - Dataset summary and key performance indicators.
 - Hourly rental demand visualization.
 - Monthly demand analysis.
 - Dataset preview.
 
 **Demand Prediction**
+<img width="1512" height="777" alt="Screenshot 2026-11-20 at 8 31 45 PM" src="https://github.com/user-attachments/assets/bd0f4c08-a249-4b0d-9aa9-823e9bdcff47" />
+
 - Interactive date and time selection.
 - Weather and environmental inputs.
 - Real-time hourly bike rental demand prediction.
 - Prediction input summary.
 
 **Demand Analytics**
+<img width="1509" height="731" alt="Screenshot 2026-11-20 at 8 32 16 PM" src="https://github.com/user-attachments/assets/8ee83870-975c-435f-8014-ca023d2d4457" />
+
 - Demand by hour.
 - Demand by season.
 - Demand by weather condition.
 - Working day vs. non-working day analysis.
 
 **Model Performance**
+<img width="1512" height="719" alt="Screenshot 2026-11-20 at 8 32 34 PM" src="https://github.com/user-attachments/assets/27e7b91f-8e73-4270-b8f2-b263be9fe368" />
+
 - MAE, RMSE, and R² metrics.
 - Actual vs. predicted demand visualization.
 - Prediction error distribution.
