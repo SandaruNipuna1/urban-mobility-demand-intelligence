@@ -21,7 +21,7 @@ st.set_page_config(
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-MODEL_PATH = BASE_DIR / "notebooks" / "best_random_forest_model.joblib"
+MODEL_PATH = BASE_DIR / "notebooks" / "best_random_forest_model_compressed.joblib"
 DATA_PATH = BASE_DIR / "data" / "raw" / "hour.csv"
 
 FEATURES = [

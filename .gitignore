@@ -20,3 +20,7 @@ data/processed/*
 # Secrets
 .env
 *.joblib
+
+# Deployment assets
+!data/raw/hour.csv
+!notebooks/best_random_forest_model_compressed.joblib
