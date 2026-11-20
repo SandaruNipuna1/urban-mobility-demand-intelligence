@@ -55,10 +55,11 @@ st.sidebar.caption("Demand Intelligence Platform")
 
 page = st.sidebar.radio(
     "Navigation",
-    [
+        [
         "Overview",
         "Demand Prediction",
-        "Demand Analytics"
+        "Demand Analytics",
+        "Model Performance"
     ]
 )
 
@@ -355,4 +356,95 @@ elif page == "Demand Analytics":
     st.dataframe(
         df["cnt"].describe().to_frame().round(2),
         use_container_width=True
+    )
+
+# --------------------------------------------------
+# MODEL PERFORMANCE PAGE
+# --------------------------------------------------
+
+elif page == "Model Performance":
+
+    st.title("🎯 Model Performance")
+    st.write(
+        "Evaluate the Random Forest model using "
+        "chronologically held-out test data."
+    )
+
+    # Prepare chronological test set
+    split_index = int(len(df) * 0.8)
+    test_data = df.iloc[split_index:].copy()
+
+    X_test = test_data[FEATURES]
+    y_test = test_data["cnt"]
+
+    predictions = model.predict(X_test)
+
+    # Calculate evaluation metrics
+    from sklearn.metrics import (
+        mean_absolute_error,
+        mean_squared_error,
+        r2_score
+    )
+    import numpy as np
+
+    mae = mean_absolute_error(y_test, predictions)
+    rmse = np.sqrt(mean_squared_error(y_test, predictions))
+    r2 = r2_score(y_test, predictions)
+
+    # Display metrics
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric("MAE", f"{mae:.2f} bikes")
+    col2.metric("RMSE", f"{rmse:.2f} bikes")
+    col3.metric("R² Score", f"{r2:.4f}")
+
+    st.divider()
+
+    # Actual vs predicted
+    st.subheader("Actual vs Predicted Demand")
+
+    comparison = pd.DataFrame({
+        "Actual Demand": y_test.values,
+        "Predicted Demand": predictions
+    })
+
+    st.scatter_chart(
+        comparison,
+        x="Actual Demand",
+        y="Predicted Demand"
+    )
+
+    # Residual analysis
+    st.subheader("Prediction Error Distribution")
+
+    residuals = y_test.values - predictions
+
+    st.histogram = None
+    residual_data = pd.DataFrame({
+        "Prediction Error (Actual - Predicted)": residuals
+    })
+
+    st.bar_chart(
+        residual_data["Prediction Error (Actual - Predicted)"]
+        .value_counts(bins=30)
+        .sort_index()
+    )
+
+    # Explain metrics
+    st.subheader("Understanding the Results")
+
+    st.write(
+        f"""
+        - **MAE ({mae:.2f}):** On average, predictions differ
+          from actual demand by approximately {mae:.0f} bikes.
+        - **RMSE ({rmse:.2f}):** Measures prediction error while
+          penalizing larger errors more heavily.
+        - **R² ({r2:.4f}):** The model explains approximately
+          {r2 * 100:.2f}% of the variation in hourly demand.
+        """
+    )
+
+    st.caption(
+        "Evaluation uses the final 20% of records in chronological "
+        "order, not the training dataset."
     )
