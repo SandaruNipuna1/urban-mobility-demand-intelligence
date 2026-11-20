@@ -156,6 +156,9 @@ Additional evaluation included:
 
 ### 6. Interactive Dashboard
 
+<img width="1512" height="739" alt="Screenshot 2026-11-20 at 8 30 04 PM" src="https://github.com/user-attachments/assets/cb673ca6-3e9c-4d1d-9916-77297ece1bf5" />
+
+
 Developed an interactive Streamlit application with four main sections.
 
 **Overview**
