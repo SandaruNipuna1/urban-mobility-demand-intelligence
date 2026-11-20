@@ -400,35 +400,85 @@ elif page == "Model Performance":
 
     st.divider()
 
-    # Actual vs predicted
+        # Actual vs predicted
     st.subheader("Actual vs Predicted Demand")
+
+    import plotly.express as px
+    import plotly.graph_objects as go
 
     comparison = pd.DataFrame({
         "Actual Demand": y_test.values,
         "Predicted Demand": predictions
     })
 
-    st.scatter_chart(
-        comparison,
-        x="Actual Demand",
-        y="Predicted Demand"
+    comparison["Prediction Error"] = (
+        comparison["Actual Demand"] -
+        comparison["Predicted Demand"]
     )
 
-    # Residual analysis
+    fig = px.scatter(
+        comparison,
+        x="Actual Demand",
+        y="Predicted Demand",
+        hover_data=["Prediction Error"],
+        opacity=0.6,
+        title="Actual vs Predicted Bike Rental Demand"
+    )
+
+    min_value = min(
+        comparison["Actual Demand"].min(),
+        comparison["Predicted Demand"].min()
+    )
+
+    max_value = max(
+        comparison["Actual Demand"].max(),
+        comparison["Predicted Demand"].max()
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=[min_value, max_value],
+            y=[min_value, max_value],
+            mode="lines",
+            name="Perfect Prediction",
+            line=dict(dash="dash", width=2)
+        )
+    )
+
+    fig.update_layout(
+        xaxis_title="Actual Demand (bikes)",
+        yaxis_title="Predicted Demand (bikes)",
+        height=600,
+        hovermode="closest"
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+        # Residual analysis
     st.subheader("Prediction Error Distribution")
+
+    import matplotlib.pyplot as plt
 
     residuals = y_test.values - predictions
 
-    st.histogram = None
-    residual_data = pd.DataFrame({
-        "Prediction Error (Actual - Predicted)": residuals
-    })
+    fig, ax = plt.subplots(figsize=(10, 4))
 
-    st.bar_chart(
-        residual_data["Prediction Error (Actual - Predicted)"]
-        .value_counts(bins=30)
-        .sort_index()
+    ax.hist(residuals, bins=40, edgecolor="black")
+
+    ax.axvline(
+        0,
+        linestyle="--",
+        linewidth=2,
+        label="Zero Error"
     )
+
+    ax.set_title("Distribution of Prediction Errors")
+    ax.set_xlabel("Prediction Error (Actual - Predicted)")
+    ax.set_ylabel("Number of Predictions")
+    ax.legend()
+
+    st.pyplot(fig)
+    plt.close(fig)
 
     # Explain metrics
     st.subheader("Understanding the Results")
