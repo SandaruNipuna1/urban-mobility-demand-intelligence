@@ -73,48 +73,99 @@ st.sidebar.caption("Model: Random Forest Regressor")
 
 if page == "Overview":
 
-    st.title("Urban Mobility Demand Intelligence")
-    st.subheader("Hourly Bike Rental Demand Analysis")
+    import plotly.express as px
 
-    st.write(
-        "Explore historical bike rental patterns and predict "
-        "hourly demand using a machine learning model."
+    st.title("🚲 Urban Mobility Demand Intelligence")
+
+    st.markdown(
+        "Explore historical bike-sharing demand patterns "
+        "and machine learning predictions."
     )
 
+    # KPI metrics
     total_records = len(df)
     average_demand = df["cnt"].mean()
     maximum_demand = df["cnt"].max()
+    total_rentals = df["cnt"].sum()
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
-    col1.metric("Total Hourly Records", f"{total_records:,}")
-    col2.metric("Average Hourly Rentals", f"{average_demand:.0f}")
-    col3.metric("Maximum Hourly Rentals", f"{maximum_demand:,}")
+    col1.metric("Total Records", f"{total_records:,}")
+    col2.metric("Average Hourly Demand", f"{average_demand:.0f}")
+    col3.metric("Peak Hourly Demand", f"{maximum_demand:,}")
+    col4.metric("Total Rentals", f"{total_rentals:,}")
 
     st.divider()
 
-    st.subheader("Historical Hourly Demand")
+    # Hourly demand
+    st.subheader("Hourly Rental Demand")
 
     hourly_demand = (
         df.groupby("hr")["cnt"]
         .mean()
-        .reindex(range(24))
+        .reset_index()
     )
 
-    st.line_chart(hourly_demand)
+    fig_hourly = px.line(
+        hourly_demand,
+        x="hr",
+        y="cnt",
+        markers=True,
+        title="Average Bike Rentals by Hour"
+    )
 
+    fig_hourly.update_layout(
+        xaxis_title="Hour of Day",
+        yaxis_title="Average Rentals",
+        hovermode="x unified"
+    )
+
+    st.plotly_chart(fig_hourly, use_container_width=True)
+
+    # Monthly demand
     st.subheader("Monthly Rental Demand")
 
     monthly_demand = (
         df.groupby("mnth")["cnt"]
         .mean()
-        .reindex(range(1, 13))
+        .reset_index()
     )
 
-    st.bar_chart(monthly_demand)
+    month_names = [
+        "January", "February", "March", "April",
+        "May", "June", "July", "August",
+        "September", "October", "November", "December"
+    ]
 
+    monthly_demand["Month"] = monthly_demand["mnth"].map(
+        lambda month: month_names[month - 1]
+    )
+
+    fig_monthly = px.bar(
+        monthly_demand,
+        x="Month",
+        y="cnt",
+        title="Average Bike Rentals by Month"
+    )
+
+    fig_monthly.update_layout(
+        xaxis_title="Month",
+        yaxis_title="Average Rentals"
+    )
+
+    st.plotly_chart(fig_monthly, use_container_width=True)
+
+    # Dataset preview
     st.subheader("Dataset Preview")
-    st.dataframe(df.head(10), use_container_width=True)
+
+    st.caption(
+        "A sample of the historical hourly bike-sharing records."
+    )
+
+    st.dataframe(
+        df.head(10),
+        width="stretch"
+    )
 
 
 # --------------------------------------------------
@@ -194,11 +245,11 @@ elif page == "Demand Prediction":
 
     with col4:
         wind_speed = st.slider(
-            "Wind Speed (km/h)",
-            min_value=0,
-            max_value=67,
-            value=15
-        )
+    "Wind Speed (km/h)",
+    min_value=0,
+    max_value=57,
+    value=15
+)
 
     # Date-based feature engineering
 
@@ -257,28 +308,78 @@ elif page == "Demand Prediction":
 
         prediction = model.predict(input_data)[0]
         prediction = max(0, prediction)
-
         st.success("Prediction completed successfully!")
 
-        result_col1, result_col2 = st.columns(2)
+        result_col1, result_col2, result_col3 = st.columns(3)
 
         result_col1.metric(
             "Estimated Bike Rentals",
-            f"{prediction:,.0f}"
+            f"{prediction:,.0f} bikes"
         )
 
         result_col2.metric(
+            "Selected Date",
+            date.strftime("%d %b %Y")
+        )
+
+        result_col3.metric(
             "Selected Hour",
             f"{selected_hour:02d}:00"
         )
 
         st.caption(
-            "This is a machine learning estimate, not a guaranteed "
-            "number of rentals."
+            "This is a machine learning estimate based on historical "
+            "2011–2012 data, not a guaranteed number of rentals."
         )
 
         st.subheader("Prediction Input Summary")
-        st.dataframe(input_data, use_container_width=True)
+
+        season_names = {
+            1: "Winter",
+            2: "Spring",
+            3: "Summer",
+            4: "Fall"
+        }
+
+        summary = pd.DataFrame({
+            "Feature": [
+                "Date",
+                "Season",
+                "Year",
+                "Month",
+                "Hour",
+                "Holiday",
+                "Weekday",
+                "Working Day",
+                "Weather",
+                "Temperature",
+                "Feels-like Temperature",
+                "Humidity",
+                "Wind Speed"
+            ],
+            "Selected Value": [
+                date.strftime("%d %B %Y"),
+                season_names[season],
+                date.year,
+                date.strftime("%B"),
+                f"{selected_hour:02d}:00",
+                "Yes" if holiday else "No",
+                date.strftime("%A"),
+                "Yes" if workingday else "No",
+                selected_weather,
+                f"{temperature} °C",
+                f"{feels_like} °C",
+                f"{humidity}%",
+                f"{wind_speed} km/h"
+            ]
+        })
+
+        st.dataframe(
+    summary,
+    hide_index=True,
+    width="stretch",
+    height=500
+)
 
 
 # --------------------------------------------------
@@ -287,6 +388,8 @@ elif page == "Demand Prediction":
 
 elif page == "Demand Analytics":
 
+    import plotly.express as px
+
     st.title("📊 Demand Analytics")
 
     st.write(
@@ -294,6 +397,7 @@ elif page == "Demand Analytics":
         "weather and hourly bike rental demand."
     )
 
+    # Demand by Hour
     col1, col2 = st.columns(2)
 
     with col1:
@@ -303,10 +407,23 @@ elif page == "Demand Analytics":
             df.groupby("hr")["cnt"]
             .mean()
             .reindex(range(24))
+            .reset_index()
         )
 
-        st.bar_chart(hourly)
+        fig_hourly = px.bar(
+            hourly,
+            x="hr",
+            y="cnt",
+            title="Average Rentals by Hour",
+            labels={
+                "hr": "Hour of Day",
+                "cnt": "Average Rentals"
+            }
+        )
 
+        st.plotly_chart(fig_hourly, use_container_width=True)
+
+    # Demand by Season
     with col2:
         st.subheader("Demand by Season")
 
@@ -319,10 +436,22 @@ elif page == "Demand Analytics":
                 3: "Summer",
                 4: "Fall"
             })
+            .rename_axis("Season")
+            .reset_index(name="Average Rentals")
         )
 
-        st.bar_chart(seasonal)
+        fig_season = px.bar(
+            seasonal,
+            x="Season",
+            y="Average Rentals",
+            title="Average Rentals by Season"
+        )
 
+        st.plotly_chart(fig_season, use_container_width=True)
+
+    st.divider()
+
+    # Demand by Weather
     st.subheader("Demand by Weather Condition")
 
     weather_demand = (
@@ -334,10 +463,20 @@ elif page == "Demand Analytics":
             3: "Light Rain / Snow",
             4: "Heavy Rain / Snow"
         })
+        .rename_axis("Weather Condition")
+        .reset_index(name="Average Rentals")
     )
 
-    st.bar_chart(weather_demand)
+    fig_weather = px.bar(
+        weather_demand,
+        x="Weather Condition",
+        y="Average Rentals",
+        title="Average Rentals by Weather Condition"
+    )
 
+    st.plotly_chart(fig_weather, use_container_width=True)
+
+    # Working Day vs Non-working Day
     st.subheader("Working Day vs Non-working Day")
 
     working_demand = (
@@ -347,16 +486,32 @@ elif page == "Demand Analytics":
             0: "Non-working Day",
             1: "Working Day"
         })
+        .rename_axis("Day Type")
+        .reset_index(name="Average Rentals")
     )
 
-    st.bar_chart(working_demand)
+    fig_working = px.bar(
+        working_demand,
+        x="Day Type",
+        y="Average Rentals",
+        title="Average Rentals by Day Type"
+    )
+
+    st.plotly_chart(fig_working, use_container_width=True)
+
+    # Demand Statistics
+    st.divider()
 
     st.subheader("Demand Statistics")
 
-    st.dataframe(
-        df["cnt"].describe().to_frame().round(2),
-        use_container_width=True
+    statistics = (
+        df["cnt"]
+        .describe()
+        .to_frame(name="Hourly Rentals")
+        .round(2)
     )
+
+    st.dataframe(statistics, width="stretch")
 
 # --------------------------------------------------
 # MODEL PERFORMANCE PAGE
